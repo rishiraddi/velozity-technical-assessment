@@ -1,0 +1,2 @@
+import {Server} from 'socket.io';
+let io:Server|undefined; export const setIO=(s:Server)=>{io=s}; export const emitToUser=(id:string,event:string,payload:any)=>io?.to(`user:${id}`).emit(event,payload); export const emitProject=(id:string,event:string,payload:any)=>io?.to(`project:${id}`).emit(event,payload); export const emitGlobal=(event:string,payload:any)=>io?.to('global:activity').emit(event,payload); export const onlineUsers=new Set<string>(); export const getOnlineCount=()=>onlineUsers.size;

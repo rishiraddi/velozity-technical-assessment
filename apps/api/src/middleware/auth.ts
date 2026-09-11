@@ -1,0 +1,4 @@
+import {Request,Response,NextFunction} from 'express'; import {Role} from '@prisma/client'; import {verifyAccess} from '../lib/auth.js';
+declare global { namespace Express { interface Request { user?: {id:string,role:Role} } } }
+export function requireAuth(req:Request,res:Response,next:NextFunction){try{const h=req.headers.authorization;if(!h?.startsWith('Bearer '))return res.status(401).json({error:{code:'UNAUTHORIZED',message:'Authentication required'}});const c=verifyAccess(h.slice(7));req.user={id:c.sub,role:c.role};next()}catch{return res.status(401).json({error:{code:'INVALID_TOKEN',message:'Invalid or expired access token'}})}}
+export const requireRole=(...roles:Role[])=>(req:Request,res:Response,next:NextFunction)=>{if(!req.user||!roles.includes(req.user.role))return res.status(403).json({error:{code:'FORBIDDEN',message:'Insufficient permissions'}});next()};

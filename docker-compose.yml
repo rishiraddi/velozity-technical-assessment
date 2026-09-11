@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: velozity
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports: ["5432:5432"]
+    volumes: ["pgdata:/var/lib/postgresql/data"]
+  api:
+    build: ./apps/api
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/velozity
+      JWT_ACCESS_SECRET: change-me-access-secret
+      JWT_REFRESH_SECRET: change-me-refresh-secret
+      FRONTEND_URL: http://localhost:5173
+      API_PORT: 4000
+    ports: ["4000:4000"]
+    depends_on: [postgres]
+volumes:
+  pgdata:

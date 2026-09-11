@@ -1,0 +1,3 @@
+import {Role} from '@prisma/client'; import {prisma} from '../lib/prisma.js';
+export async function canViewProject(userId:string,role:Role,projectId:string){if(role===Role.ADMIN)return true;const p=await prisma.project.findUnique({where:{id:projectId},select:{creatorId:true,tasks:{select:{developerId:true}}}});if(!p)return false;if(role===Role.PM)return p.creatorId===userId;return p.tasks.some(t=>t.developerId===userId)}
+export async function canViewTask(userId:string,role:Role,taskId:number){if(role===Role.ADMIN)return true;const t=await prisma.task.findUnique({where:{id:taskId},select:{developerId:true,project:{select:{creatorId:true}}}});if(!t)return false;return role===Role.DEVELOPER?t.developerId===userId:t.project.creatorId===userId}

@@ -1,0 +1,10 @@
+import jwt from 'jsonwebtoken'; import crypto from 'crypto'; import bcrypt from 'bcryptjs';
+import {Role} from '@prisma/client';
+const accessSecret=process.env.JWT_ACCESS_SECRET!; const refreshSecret=process.env.JWT_REFRESH_SECRET!;
+export type Claims={sub:string,role:Role};
+export const signAccess=(c:Claims)=>jwt.sign(c,accessSecret,{expiresIn:'15m'});
+export const signRefresh=(c:Claims)=>jwt.sign(c,refreshSecret,{expiresIn:'7d'});
+export const verifyAccess=(t:string)=>jwt.verify(t,accessSecret) as Claims;
+export const verifyRefresh=(t:string)=>jwt.verify(t,refreshSecret) as Claims;
+export const hashToken=(t:string)=>crypto.createHash('sha256').update(t).digest('hex');
+export const hashPassword=(p:string)=>bcrypt.hash(p,12); export const checkPassword=(p:string,h:string)=>bcrypt.compare(p,h);

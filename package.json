@@ -1,0 +1,7 @@
+{
+  "name":"velozity-client-dashboard",
+  "private":true,
+  "workspaces":["apps/api","apps/web"],
+  "scripts":{"dev":"concurrently \"npm run dev -w apps/api\" \"npm run dev -w apps/web\"","build":"npm run build -w apps/web && npm run build -w apps/api","db:generate":"npm run prisma:generate -w apps/api","db:migrate":"npm run prisma:migrate -w apps/api","db:seed":"npm run prisma:seed -w apps/api"},
+  "devDependencies":{"concurrently":"^9.1.2"}
+}
